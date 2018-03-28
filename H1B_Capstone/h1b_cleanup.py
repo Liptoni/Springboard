@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import csv
+pd.options.mode.chained_assignment = None
 
 def get_status(status):
     """
@@ -45,4 +45,4 @@ hb['STATE'] = hb['STATE'].str.strip()
 #log-transform wage into new column
 hb['LOG_WAGE'] = np.log10(hb['PREVAILING_WAGE'])
 
-hb.to_csv('h1b_clean.csv', quoting=csv.QUOTE_NONNUMERIC)
+hb.to_csv('h1b_clean.csv')
