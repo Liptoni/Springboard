@@ -36,5 +36,12 @@
 ehthumbs.db
 Thumbs.db
 
+# Ipython
+ #
+######################
+.ipynb_checkpoints/
+
+# Specific Files #
+######################
 h1b_kaggle.csv
 h1b_clean.csv
