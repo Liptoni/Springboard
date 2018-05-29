@@ -25,7 +25,7 @@ def case_status(hb):
     return hb
 
 #read in data
-hb = pd.read_csv('h1b_kaggle.csv')
+hb = pd.read_csv('Z:/Springboard/H1B_Capstone/data/h1b_kaggle.csv')
 
 #rename missing column header. This is from the data dict website
 #https://www.foreignlaborcert.doleta.gov/docs/Performance_Data/Disclosure/FY15-FY16/H-1B_FY16_Record_Layout.pdf
@@ -45,4 +45,7 @@ hb['STATE'] = hb['STATE'].str.strip()
 #log-transform wage into new column
 hb['LOG_WAGE'] = np.log10(hb['PREVAILING_WAGE'])
 
-hb.to_csv('h1b_clean.csv')
+#drop obviously erroneous records
+hb = hb[hb.PREVAILING_WAGE < 1e+09]
+
+hb.to_csv('Z:/Springboard/H1B_Capstone/data/h1b_clean.csv')

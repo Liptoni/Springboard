@@ -8,6 +8,8 @@ county_pop.csv - output from county_pop.py. This contains the populations of cou
 fcc_census_info.csv - output from fcc.censu.py. This contains data obtained from the FCC Area API. This 
                       includes census block population as well as relevant county and state FIPS codes.
                       
+h1b_census_full.csv - cleaned kaggle dataset combined with fcc_census info dataset
+                      
 h1b_clean.csv - cleaned version of the Kaggle H1B dataset. Created with the h1b_cleanup.py script.
 
 H-1B_FY16_Record_Layout.pdf - data dictionary for H1B dataset from the US Department of labor site:
