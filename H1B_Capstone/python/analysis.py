@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import SGDClassifier
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 from datetime import datetime
 from sklearn.decomposition import PCA
 from sklearn.kernel_approximation import RBFSampler, Nystroem
@@ -34,7 +34,6 @@ hb_data = pd.read_csv('Z:/Springboard/H1B_Capstone/data/h1b_census_full.csv', in
                         dtype={'block_fips':np.object, 'county_fips':np.object, 'state_fips':np.object})
 
 #drop NAs
-hb_data = hb_data[hb_data.YEAR == 2016]
 hb_data.dropna(inplace=True)
 
 print('data cleaned', datetime.now()-start_time)
@@ -74,6 +73,9 @@ y_pred = sgd.predict(test_scaled)
 
 print(sgd.score(test_scaled, y_test))
 print(classification_report(y_test, y_pred))
+
+print(confusion_matrix(y_test, y_pred))
+
 
 print("Done!")
 print(datetime.now()-start_time)
