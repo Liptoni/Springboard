@@ -8,6 +8,9 @@ from sklearn.metrics import classification_report, confusion_matrix
 from datetime import datetime
 from sklearn.decomposition import PCA
 from sklearn.kernel_approximation import RBFSampler, Nystroem
+from sklearn.utils.class_weight import compute_class_weight
+from imblearn.over_sampling import SMOTE
+
 pd.options.mode.chained_assignment = None
 
 
@@ -21,8 +24,8 @@ def get_chunks(data_len, chunksize):
         print("chunk",chunkstarter, datetime.now()-start_time)
         chunkender = chunkstarter + chunksize
         x_chunk, y_chunk = x_train.iloc[chunkstarter:chunkender], y_train.iloc[chunkstarter:chunkender]
+        #x_chunk, y_chunk = smote.fit_sample(x_chunk, y_chunk)
         #x_chunk, y_chunk = x_train[chunkstarter:chunkender:1], y_train[chunkstarter:chunkender:1]
-
         
         yield x_chunk, y_chunk
         chunkstarter += chunksize
@@ -31,7 +34,8 @@ def get_chunks(data_len, chunksize):
 #full dataset can be found: https://www.kaggle.com/nsharan/h-1b-visa/data
 #A description of cleanup can be found: https://github.com/Liptoni/Springboard/blob/master/H1B_Capstone/H1B_Data_Wrangling.docx
 hb_data = pd.read_csv('Z:/Springboard/H1B_Capstone/data/h1b_census_full.csv', index_col='CASE_NUMBER',
-                        dtype={'block_fips':np.object, 'county_fips':np.object, 'state_fips':np.object})
+                        dtype={'block_fips':np.object, 'county_fips':np.object, 'state_fips':np.object} )
+
 
 #drop NAs
 hb_data.dropna(inplace=True)
@@ -43,19 +47,35 @@ labels = hb_data['CERTIFIED']
 features = hb_data[['FULL_TIME_POSITION', 'PREVAILING_WAGE','SOC_NAME','lon', 'lat', 'county_fips', 'county_pop', 'state_code']]
 features= pd.get_dummies(features, drop_first=True)
 
+
 print('dummies created', datetime.now()-start_time)
+
+
+# =============================================================================
+# #get class weights
+# weights = compute_class_weight(class_weight='balanced', classes=np.unique(labels), y=labels)
+# weights = {'certified':weights[0], 'denied':weights[1]}
+# 
+# print('got weights', datetime.now()-start_time)
+# =============================================================================
 
 #get training and testing data
 x_train, x_test, y_train, y_test = train_test_split(features, labels, test_size = 0.25, random_state=24)
 data_len = len(x_train)
 
+
 print('data split', datetime.now()-start_time)
+
+# =============================================================================
+# #define SMOTE
+# smote = SMOTE(random_state = 24)
+# =============================================================================
 
 #split data into batches to meet memory requirements
 batcher = get_chunks(data_len, 10000)
 
 #define SGD
-sgd = SGDClassifier(alpha=1, loss='hinge', max_iter=5, penalty='l2', tol=None)
+sgd = SGDClassifier(alpha=1, loss='hinge', max_iter=5, penalty='l2', tol=None)#, class_weight=weights
 
 scaler = StandardScaler()
 

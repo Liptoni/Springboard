@@ -5,6 +5,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import classification_report
+from imblearn.over_sampling import SMOTE
+from collections import Counter
+from sklearn.utils.class_weight import compute_class_weight
 #from sklearn.kernel_approximation import RBFSampler, Nystroem
 
 from datetime import datetime
@@ -34,9 +37,14 @@ features= pd.get_dummies(features, drop_first=True)
 # kernel_ = Nystroem(random_state =24)
 # =============================================================================
 
+#get class weights
+weights = compute_class_weight(class_weight='balanced', classes=np.unique(labels), y=labels)
+weights = {'certified':weights[0], 'denied':weights[1]}
+
+print('got weights', datetime.now()-start_time)
 
 #setup pipeline
-steps = [('scaler', StandardScaler()), ('sgd',SGDClassifier(tol=None))] #, ('kernel',kernel_)
+steps = [('scaler', StandardScaler()), ('sgd',SGDClassifier(tol=None))] #, ('kernel',kernel_), class_weight=weights
 pipeline = Pipeline(steps)
 
 #identify hyperparameters to test in GridSearchCV
@@ -54,6 +62,14 @@ parameters = dict(sgd__loss = loss_options,
 #get training and testing data
 x_train, x_test, y_train, y_test = train_test_split(features, labels, test_size = 0.25, random_state=24)
 
+# =============================================================================
+# #correct imbalance with SMOTE
+# smote = SMOTE(random_state = 24)
+# x_train, y_train = smote.fit_sample(x_train, y_train)
+# print('Resampled dataset shape {}'.format(Counter(y_train)))
+# =============================================================================
+
+
 #run cross validation
 cv=GridSearchCV(pipeline, param_grid=parameters, cv=5, verbose=10)
 cv.fit(x_train, y_train)
@@ -66,4 +82,5 @@ print(classification_report(y_test, y_pred))
 
 
 print(datetime.now()-start_time)
+
 
