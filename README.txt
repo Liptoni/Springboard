@@ -26,3 +26,9 @@ Linear_Regression - using sci-kit learn and stats models to do linear regression
 logistic_regression - using sci-kit learn to perform logistic regression for classification
 
 naive_bayes - using sci-kit learn's MultinomialNB to classify critics reviews to try to predict rotten tomatoes scores
+
+Relax_TakeHome_Challenge - mock takehome challenge. Calculating and predicting user adoption of an app based on multiple signons in a 7-day window
+
+Spark_MapReduce - using PySpark to create Logistic Regression and Random Forest Regressor
+
+Ultimate_TakeHome_Challenge - mock takehome challenge. Exploring and predicting ride-share user activities
