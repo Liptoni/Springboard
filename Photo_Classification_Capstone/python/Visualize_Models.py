@@ -6,6 +6,7 @@ Created on Sun Jun 24 10:44:44 2018
 """
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torchvision import transforms, datasets, models
 import numpy as np
 import matplotlib.pyplot as plt
@@ -103,23 +104,27 @@ if __name__ == "__main__":
     class_names = test_dataset.classes
     
     #create lists of models, model states to load, and figure titles for plotting and exporting
-    models = [LogisticRegressionModel(3*224*224, 4), 
+    models = [LogisticRegressionModel(3*224*224, 4),
               FeedforwardNeuralNetModel(3*224*224, 100, 4), 
               CNN_Model(), 
-              models.resnet101(pretrained=False, num_classes = 4)]
+              models.resnet101(pretrained=False, num_classes = 4)
+             ]
+
     
     model_states = ['Saved_Models\\PhotoClass_Logreg_Model.pkl',
                     'Saved_Models\\PhotoClass_FF_NerualNet_Model.pkl', 
                     'Saved_Models\\PhotoClass_Simple_CNN_Model.pkl',
-                    'Saved_Models\\PhotoClass_ResNet101_TL.pkl']
+                    'Saved_Models\\PhotoClass_ResNet101_TL.pkl'
+                   ]
+
     
-    figure_titles = ['Logistic Regression', 'Feed Forward Neural Net', 'Simple Convolutional NN', 'ResNet 101']
-    figure_names = ['predictions/log_reg.png', 'predictions/ff_nn.png', 'predictions/Simple_CNN.png', 'predictions/ResNet.png']
+    figure_titles = ['Logistic Regression', 'Feed Forward Neural Net', 'Simple Convolutional NN', 'ResNet 101']#
+    figure_names = ['predictions/log_reg.png', 'predictions/ff_nn.png', 'predictions/Simple_CNN.png', 'predictions/ResNet.png']#
     
     models_2d = ['LogisticRegressionModel', 'FeedforwardNeuralNetModel']
     
     #loop over each model, load saved weights, evaluate test images, plot images with predicted labels
-    for model, state, fig_title, fig_name in zip(models, model_states, figure_titles, figure_names):
+    for model, state, fig_title, fig_name in zip(models, model_states, figure_titles, figure_names):    
         print(model.__class__.__name__)
         model.load_state_dict(torch.load(state))
         model.eval()
@@ -133,12 +138,19 @@ if __name__ == "__main__":
                 output = model(images_trans)
             else:                
                 output = model(images)
-            _, predicted = torch.max(output.data, 1)
             
+            #run output through softmax to get prediction probabilities
+            soft_out = F.softmax(output)            
+            prob, predicted = torch.max(soft_out.data, 1)            
+            
+            #count the number of correct predictions
             correct += (predicted == labels).numpy().sum()
             
+            #get predicted labels and probabilities
             pred_labels = [class_names[pred] for pred in predicted]
+            pred_probs = [np.round(p.numpy(),2) for p in prob]
             
+            #plot each image with the predicted label and probability of that prediction
             images_so_far = 0
             fig = plt.figure(figsize=(6, 8))
             for j in range(images.size()[0]):
@@ -151,14 +163,18 @@ if __name__ == "__main__":
                 inp = np.clip(inp, 0, 1)
                 ax.imshow(inp)
                 ax.axis('off')
-                ax.set_title('predicted: {}'.format(class_names[predicted[j]]))
+                pred_label = pred_labels[j] #class_names[predicted[j]]
+                pred_prob = np.round(pred_probs[j] * 100,2)
+                ax.set_title('predicted: {} ({}%)'.format(pred_label, pred_prob))
             
-            
+            #save plots to file
             fig.suptitle(fig_title)    
             plt.tight_layout()    
             fig.subplots_adjust(top=0.88)
             plt.savefig(fig_name)
             plt.close()
+            
+            
             #print true labels, predicted labels and number correct
             print(img_labels)
             print(pred_labels)
