@@ -20,6 +20,7 @@ I created a SQL relational database to house the data. The database has the foll
 
 I wrote a python compiler script to loop over the folders and files in the files directory and generate tables to be imported into the SQL database. For this exercise, I imported these files by hand. In the future this would be unrealistically tedious and I would write a script that would call my compiler script and then insert the new data into the database. This could be done on any time frame (daily, weekly, etc.). Here is the script I used to compile all of the data files:
 
+```python
 import os
 import re
 import pandas as pd
@@ -29,7 +30,7 @@ import datetime
 #get date that this script was run (used to date output excel files)
 this_date = datetime.datetime.today().strftime('%Y_%m_%d')
 
-```python
+
 def get_age(age):
     """
     Takes a string containing an age
@@ -169,7 +170,6 @@ apple_df.to_excel(apple_file_name, index=False)
 milk_df = pd.concat(milk_dfs)
 milk_file_name = this_date + "_milk.xlsx"
 milk_df.to_excel(milk_file_name, index=False)
-```
 
 #loop through Spring Foods directories          
 spring_dirs = next(os.walk('files/Spring Foods'))[1]
@@ -238,6 +238,7 @@ for direct in spring_dirs:
 imported_files_df = pd.DataFrame(imported_files, columns = ['file_path'])
 imported_file_name = this_date + "_imported_files.xlsx"
 imported_files_df.to_excel(imported_file_name, index=False)
+```
 
 I ran the following SQL update queries after import to update the consumed and sold fields in the relevant tables:
 update a
