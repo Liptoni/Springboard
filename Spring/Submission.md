@@ -7,14 +7,14 @@ Date: 2/4/2019
 ## Instructions
 
 I created a SQL relational database to house the data. The database has the following tables:
-•	Import_Log – This holds the filepaths of files imported into the database. Used to ensure that we don’t import the same data twice
-•	Trees – contains information about trees, joins with Apples and Bananas on Tree_ID
-•	Apples – info about apples
-•	Bananas  - info about bananas
-•	Cows  - info about individual cows joins with milk on Cow_ID
-•	Milk – info about individual milk cartons joins with Butter on Cow_ID and Carton_Number
-•	Butter – info about individual sticks of butter
-•	Sales – information about sold items including sale date
+*	Import_Log – This holds the filepaths of files imported into the database. Used to ensure that we don’t import the same data twice
+*	Trees – contains information about trees, joins with Apples and Bananas on Tree_ID
+*	Apples – info about apples
+*	Bananas  - info about bananas
+*	Cows  - info about individual cows joins with milk on Cow_ID
+*	Milk – info about individual milk cartons joins with Butter on Cow_ID and Carton_Number
+*	Butter – info about individual sticks of butter
+*	Sales – information about sold items including sale date
 
 ![Database Diagram](./DB_Diagram.PNG?raw=True "Database Diagram")
 
