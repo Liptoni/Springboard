@@ -18,7 +18,7 @@ I created a SQL relational database to house the data. The database has the foll
 
 ![Database Diagram](./DB_Diagram.PNG?raw=True "Database Diagram")
 
-I wrote a python compiler script to loop over the folders and files in the files directory and generate tables to be imported into the SQL database. For this exercise, I imported these files by hand. In the future this would be unrealistically tedious and I would write a script that would call my compiler script and then insert the new data into the database. This could be done on any time frame (daily, weekly, etc.). Here is the script I used to compile all of the data files:
+I wrote a python compiler script to loop over the folders and files in the files directory and generate tables to be imported into the SQL database. For this exercise, I imported these files by hand. In the future, this would be unrealistically tedious and I would write a script that would call my compiler script and then insert the new data into the database. This could be done on any time frame (daily, weekly, etc.). Here is the script I used to compile all of the data files:
 
 ```python
 import os
@@ -265,19 +265,23 @@ I came across two text files that were not human readable. I attempted, unsucces
 ## Questions
 
 1) Why did you settle on this design? Justify any significant design decisions you made (tools you chose, etc.).
-	I settled on this framework because I think it is the easiest way to keep track of a large number of related items. Being able to track individual items from purchase to consumption, sale, or expiration is easy if all we have to do is track its ID. This framework also allows us to add new types of data on the fly (see my answer to question 6 below) by creating new tables and tracking IDs. We don't have to go back and modify existing records, we can just create new tables and create new metadata for an item by inserting its ID. This framework also works well with various applications. We can create an API, or use existing software that does this for us, to link this backend to some front-end framework which will allow us to give access to users who don't have the ability to write code, or to users who need to enter new data.
 	
-	The biggest thing I would change right now would be to update how we are storing the IDs for each of our items. Right now they are just integers, but it would be nice to have something else to identify the item type from the ID. This would be necessary if we want to start compiling multiple item types in the same table.
+  I settled on this framework because I think it is the easiest way to keep track of a large number of related items. Being able to track individual items from purchase to consumption, sale, or expiration is easy if all we have to do is track its ID. This framework also allows us to add new types of data on the fly (see my answer to question 6 below) by creating new tables and tracking IDs. We don't have to go back and modify existing records, we can just create new tables and create new metadata for an item by inserting its ID. This framework also works well with various applications. We can create an API, or use existing software that does this for us, to link this backend to some front-end framework which will allow us to give access to users who don't have the ability to write code, or to users who need to enter new data.
+	
+  The biggest thing I would change right now would be to update how we are storing the IDs for each of our items. Right now they are just integers, but it would be nice to have something else to identify the item type from the ID. This would be necessary if we want to start compiling multiple item types in the same table.
 
 2) What assumptions (if any) did you have to make about the data?
-	I made one major assumption regarding the sales data. The dates on the directories were both for December of 2019. I assumed that this was erroneous and corrected the dates to 2018. This will affect the count of products available in question 3.
+	
+  I made one major assumption regarding the sales data. The dates on the directories were both for December of 2019. I assumed that this was erroneous and corrected the dates to 2018. This will affect the count of products available in question 3.
 	
 	Also for the sales data, I assumed that the Item ID referred to either the apples or bananas. But, there was no identifying information about what the product actually was. In the future I would design the sales data to include the item type as well as the ID in case of overlapping IDs from multiple item types. 
 	
 	I noticed that there were duplicate IDs for bananas from two different trees, Going forward, if we expect this to occur frequently, I would create a composite ID that concatenated both the banana ID and tree ID.
 
 3) How many items did Spring Foods™ have in-stock as of January 28, 2019? (How’d you arrive at this number?)
-	221. I arrived at this answer by running the SQL query posted in the answer to the next question filtering out consumed, sold, and expired items from apples, bananas, milk, and butter:
+	
+  221. 
+  I arrived at this answer by running the SQL query posted in the answer to the next question filtering out consumed, sold, and expired items from apples, bananas, milk, and butter:
 
 4) How would technical folks go about answering Question #3? Non-technical folks?
 ```sql
@@ -320,9 +324,12 @@ For non-technical folks, I envision a front-end application where they can acces
 
 
 5) How would you envision future data getting into the system? What processes and technical solutions would need to be put in place? (Imagine that this system is being used by data scientists, cashiers, and others.)
+
 I envision future data getting into the database in two ways. For internally produced items or items that we sell, I envision an application where our staff can indicate items that were consumed or sold. This would then trigger stored procedures that would update the back-end database accordingly. 
+
 For new purchases, I envision a modification of the python compiler script I wrote. This could be called as a command line script, or I could write code to automatically call that compiler script, then trigger the database to import the newly compiled data. My first thought would be to do that by writing VBA function to read in new files, parse them, and then push them to the back-end database.
 
 
 6) If we were to start freezing some of our items on arrival, what work would be required to track freeze and thaw dates?
+
 The first thing we would need is a new table in our database. This would include the ID of the item being sold, the type of item, the date it was frozen, the date it was thawed, and a new expiration date (assuming the expiration date changes when the item is frozen and thawed). We could join this table back to the individual item tables based on item type and ID. Or, if we have created a single table containing a unique item id, and information about those items, we could join this freeze/thaw table to that by using the unique item ID. We could get this information into the database the same way we get the consumed and sold data in.
