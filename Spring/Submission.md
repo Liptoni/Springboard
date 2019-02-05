@@ -241,6 +241,8 @@ imported_files_df.to_excel(imported_file_name, index=False)
 ```
 
 I ran the following SQL update queries after import to update the consumed and sold fields in the relevant tables:
+
+```sql
 update a
 set a.Sold = 1, a.Sold_Date = s.Sale_Date
 from Apples a
@@ -255,7 +257,7 @@ update m
 set m.Consumed = 1, m.Consumed_Date = b.Made_Date
 from Milk m
 inner join Butter b on b.Cow_ID = m.Cow_ID and b.Carton_Number = m.Carton_Number
-
+```
 
 I came across two text files that were not human readable. I attempted, unsuccessfully, to guess the encoding used to generate the files and then determined that they were erroneous text files and chose to move on.
 
@@ -278,6 +280,7 @@ I came across two text files that were not human readable. I attempted, unsucces
 	221. I arrived at this answer by running the SQL query posted in the answer to the next question filtering out consumed, sold, and expired items from apples, bananas, milk, and butter:
 
 4) How would technical folks go about answering Question #3? Non-technical folks?
+```sql
 declare @date_in_question as date
 set @date_in_question = '2019-01-28'
 
@@ -309,7 +312,8 @@ where Expiration_Date > @date_in_question
 		and ((Consumed = 0 and Sold = 0)
 		or (Consumed = 1 and Consumed_Date > @date_in_question)
 		or (Sold = 1 and Sold_Date > @date_in_question))
-		
+```
+
 In the future, I would probably script something during import to compile a list of all products and their status (consumed, sold, expired, etc.) This would allow someone to query just one table instead of having to write union after union. WIth only four table to query it isn't that bad, but if we start selling more products, this could get out of hand quickly.
 
 For non-technical folks, I envision a front-end application where they can access the data through point and click. For example, we could use Microsoft Access which has the ability to make an ODBC connection to our SQL database and then we can use their built-in form creating tools to create a series of forms that any user could use regardless of technical prowess. I would be able to write some VBA functions that would power these forms and create some stock queries that a user could access. One of those queries could run this question and all we would need from the user is an input in the form of a date.
