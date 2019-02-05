@@ -272,7 +272,7 @@ The biggest thing I would change right now would be to update how we are storing
 
 2) What assumptions (if any) did you have to make about the data?
 
-I made one major assumption regarding the sales data. The dates on the directories were both for December of 2019. I assumed that this was erroneous and corrected the dates to 2018. This will affect the count of products available in question 3.
+I made one major assumption regarding the sales data. The dates on the directories were both for December of 2019. I assumed that this was erroneous and corrected the dates to 2018. This will affect the count of products available in question three.
 
 Also for the sales data, I assumed that the Item ID referred to either the apples or bananas. But, there was no identifying information about what the product actually was. In the future I would design the sales data to include the item type as well as the ID in case of overlapping IDs from multiple item types. 
 
