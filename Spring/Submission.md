@@ -265,23 +265,23 @@ I came across two text files that were not human readable. I attempted, unsucces
 ## Questions
 
 1) Why did you settle on this design? Justify any significant design decisions you made (tools you chose, etc.).
-	
-  I settled on this framework because I think it is the easiest way to keep track of a large number of related items. Being able to track individual items from purchase to consumption, sale, or expiration is easy if all we have to do is track its ID. This framework also allows us to add new types of data on the fly (see my answer to question 6 below) by creating new tables and tracking IDs. We don't have to go back and modify existing records, we can just create new tables and create new metadata for an item by inserting its ID. This framework also works well with various applications. We can create an API, or use existing software that does this for us, to link this backend to some front-end framework which will allow us to give access to users who don't have the ability to write code, or to users who need to enter new data.
-	
-  The biggest thing I would change right now would be to update how we are storing the IDs for each of our items. Right now they are just integers, but it would be nice to have something else to identify the item type from the ID. This would be necessary if we want to start compiling multiple item types in the same table.
+
+I settled on this framework because I think it is the easiest way to keep track of a large number of related items. Being able to track individual items from purchase to consumption, sale, or expiration is easy if all we have to do is track its ID. This framework also allows us to add new types of data on the fly (see my answer to question 6 below) by creating new tables and tracking IDs. We don't have to go back and modify existing records, we can just create new tables and create new metadata for an item by inserting its ID. This framework also works well with various applications. We can create an API, or use existing software that does this for us, to link this backend to some front-end framework which will allow us to give access to users who don't have the ability to write code, or to users who need to enter new data.
+
+The biggest thing I would change right now would be to update how we are storing the IDs for each of our items. Right now they are just integers, but it would be nice to have something else to identify the item type from the ID. This would be necessary if we want to start compiling multiple item types in the same table.
 
 2) What assumptions (if any) did you have to make about the data?
-	
-  I made one major assumption regarding the sales data. The dates on the directories were both for December of 2019. I assumed that this was erroneous and corrected the dates to 2018. This will affect the count of products available in question 3.
-	
-	Also for the sales data, I assumed that the Item ID referred to either the apples or bananas. But, there was no identifying information about what the product actually was. In the future I would design the sales data to include the item type as well as the ID in case of overlapping IDs from multiple item types. 
-	
-	I noticed that there were duplicate IDs for bananas from two different trees, Going forward, if we expect this to occur frequently, I would create a composite ID that concatenated both the banana ID and tree ID.
+
+I made one major assumption regarding the sales data. The dates on the directories were both for December of 2019. I assumed that this was erroneous and corrected the dates to 2018. This will affect the count of products available in question 3.
+
+Also for the sales data, I assumed that the Item ID referred to either the apples or bananas. But, there was no identifying information about what the product actually was. In the future I would design the sales data to include the item type as well as the ID in case of overlapping IDs from multiple item types. 
+
+I noticed that there were duplicate IDs for bananas from two different trees, Going forward, if we expect this to occur frequently, I would create a composite ID that concatenated both the banana ID and tree ID.
 
 3) How many items did Spring Foods™ have in-stock as of January 28, 2019? (How’d you arrive at this number?)
-	
-  221. 
-  I arrived at this answer by running the SQL query posted in the answer to the next question filtering out consumed, sold, and expired items from apples, bananas, milk, and butter:
+
+221. 
+I arrived at this answer by running the SQL query posted in the answer to the next question filtering out consumed, sold, and expired items from apples, bananas, milk, and butter:
 
 4) How would technical folks go about answering Question #3? Non-technical folks?
 ```sql
